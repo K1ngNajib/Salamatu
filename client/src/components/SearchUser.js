@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import Loading from "./Loading";
 import UserSearchCard from "./UserSearchCard";
@@ -11,24 +11,25 @@ const SearchUser = ({onClose}) => {
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
 
-    const handleSearchUser = async() => {
+    const handleSearchUser = useCallback(async () => {
         const URL = `${process.env.REACT_APP_BACKEND_URL}/api/search-user`;
         try {
             setLoading(true);
             const response = await axios.post(URL, {
-                search : search
+                search
             });
-            setLoading(false);
 
             setSearchUser(response.data.data);
         } catch (error) {
             toast.error(error?.response?.data?.message);
+        } finally {
+            setLoading(false);
         }
-    }
+    }, [search]);
 
-    useEffect(()=>{
+    useEffect(() => {
         handleSearchUser();
-    },[search]);
+    }, [handleSearchUser]);
 
     //console.log(searchUser);
 

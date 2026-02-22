@@ -1,17 +1,17 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "a nodejs server for the Cypher app",
+  "description": "a nodejs server for the CommandLink app",
   "author": "Leon Elliott Fuller",
   "license": "MIT",
-  "homepage": "https://github.com/leonfullxr/Cypher",
+  "homepage": "https://github.com/leonfullxr/CommandLink",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leonfullxr/Cypher"
+    "url": "git+https://github.com/leonfullxr/CommandLink"
   },
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test tests/*.test.js",
     "dev": "nodemon index.js",
     "start": "node index.js"
   },

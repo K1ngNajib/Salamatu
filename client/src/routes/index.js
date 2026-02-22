@@ -8,6 +8,8 @@ import MessagePage from "../components/MessagePage";
 import AuthLayouts from "../layout";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import Check2FAPage from "../pages/Check2FAPage";
+import CommandDashboard from "../pages/CommandDashboard";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 const router = createBrowserRouter([
     {
@@ -55,12 +57,21 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: "",
-                element: <Home />,
+                element: <ProtectedRoute />,
                 children: [
                     {
-                        path: ":userId",
-                        element: <MessagePage />,
+                        path: "command-dashboard",
+                        element: <CommandDashboard />,
+                    },
+                    {
+                        path: "",
+                        element: <Home />,
+                        children: [
+                            {
+                                path: ":userId",
+                                element: <MessagePage />,
+                            },
+                        ],
                     },
                 ],
             },

@@ -41,6 +41,29 @@ const userSchema = new mongoose.Schema({
         unique: true,
         sparse: true,
     },
+
+    role: {
+        type: String,
+        enum: ['super_admin', 'command_admin', 'unit_admin', 'officer', 'personnel', 'observer'],
+        default: 'personnel'
+    },
+    commandLevel: {
+        type: String,
+        default: 'Unit'
+    },
+    unit: {
+        type: String,
+        default: ''
+    },
+    department: {
+        type: String,
+        default: ''
+    },
+    availabilityStatus: {
+        type: String,
+        enum: ['online', 'offline', 'away'],
+        default: 'offline'
+    },
 }, { 
     timestamps: true 
 });

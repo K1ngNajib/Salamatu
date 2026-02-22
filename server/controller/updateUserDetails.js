@@ -7,11 +7,16 @@ async function updateUserDetails(request, response){
 
         const user = await getUserDetailsFromToken(token);
 
-        const {name, profile_pic } = request.body;
+        const {name, profile_pic, role, commandLevel, unit, department, availabilityStatus } = request.body;
 
         const updateUser = await UserModel.updateOne({_id: user._id}, {
             name,
-            profile_pic
+            profile_pic,
+            role,
+            commandLevel,
+            unit,
+            department,
+            availabilityStatus
         })
 
         const userInformation = await UserModel.findById(user._id);
