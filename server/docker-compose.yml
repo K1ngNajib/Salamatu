@@ -3,9 +3,9 @@ services:
     image: mongo:latest
     ports:
       - "27018:27018"
-    container_name: mongodb_cypher
+    container_name: mongodb_commandlink
     volumes:
-      - /data/mongodb_cypher:/data/db
+      - /data/mongodb_commandlink:/data/db
 
 # MongoDB commands
 # 1. mongosh mongodb://localhost:27018

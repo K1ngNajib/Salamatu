@@ -24,6 +24,29 @@ const messageSchema = new mongoose.Schema({
         required: true,
         ref : 'User'
     }
+,
+
+    signature: {
+        type: String,
+        default: ''
+    },
+    isOfficial: {
+        type: Boolean,
+        default: false
+    },
+    expiresAt: {
+        type: Date,
+        default: null
+    },
+    recalledAt: {
+        type: Date,
+        default: null
+    },
+    parentMessageId: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Message',
+        default: null
+    },
 }, {
     timestamps: true
 });

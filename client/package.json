@@ -1,12 +1,12 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "description": "a react app for the Cypher app",
+  "description": "a react app for the CommandLink app",
   "author": "Leon Elliott Fuller",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leonfullxr/Cypher"
+    "url": "git+https://github.com/leonfullxr/CommandLink"
   },
   "private": true,
   "dependencies": {
