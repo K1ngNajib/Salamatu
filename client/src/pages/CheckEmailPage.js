@@ -57,7 +57,7 @@ const CheckEmailPage = () => {
                     />
                 </div>
                 
-                <h3> Welcome to Cypher!</h3>
+                <h3> Welcome to CommandLink!</h3>
             
                 <form className="grid gap-3 mt-3" onSubmit={handleSubmit}>
                     <div className="flex flex-col gap-1">

@@ -1,7 +1,7 @@
-<h1 align="center">Welcome to Cypher 🔐 </h1>
+<h1 align="center">Welcome to CommandLink 🔐 </h1>
 
 <p align="center">
-   <img src="client/public/icon.png" alt="Cypher Logo" width="50%">
+   <img src="client/public/icon.svg" alt="CommandLink Logo" width="50%">
 </p>
 
 ## Table of Contents
@@ -31,9 +31,21 @@
 
 ## Description
 
-Cypher is a cutting-edge encrypted chat application designed to prioritize user privacy and security. With end-to-end encryption, your messages remain confidential and secure, ensuring peace of mind in your communications. We don't store any IP addresses, metadata or user-linked data; it is perfectly anonymous.
+CommandLink is a secure administrative command communication platform built for encrypted administrative communication. It supports structured command messaging, orders, circulars, and secure internal governance communication. With end-to-end encryption, your messages remain confidential and secure, ensuring peace of mind in your communications. We don't store any IP addresses, metadata or user-linked data; it is perfectly anonymous.
 
 ---
+
+
+## CommandLink Administrative Extensions
+
+CommandLink now includes:
+- Hierarchical roles and permissions (Super Admin, Command Admin, Unit Admin, Officer, Personnel, Observer).
+- Official Orders lifecycle with acknowledgements and archival support.
+- Circular publication and version tracking.
+- Priority signal alerts with acknowledgement toggles.
+- Personnel directory search by unit, role, and department.
+- Encrypted document distribution with access controls and download tracking.
+- Administrative audit logs for non-content actions.
 
 ## Features
 
@@ -41,6 +53,7 @@ Cypher is a cutting-edge encrypted chat application designed to prioritize user 
 - **Real-Time Messaging**: Fast and seamless chat experience.
 - **Cross-Platform Support**: Accessible on multiple devices for convenient communication.
 - **NO Metadata Storage**: Prioritizes privacy by storing zero user metadata.
+- **Phase 4 Workflow Integration**: Introduces deeper payload validation, realtime order/channel workflow events, and safer operator-facing dashboard controls with clearer error feedback.
 
 ---
 
@@ -180,11 +193,11 @@ Encrypted-Chat-App/
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/leonfullxr/Cypher.git
+   git clone https://github.com/leonfullxr/CommandLink.git
    ```
 2. Navigate to the project directory:
    ```bash
-   cd Cypher
+   cd CommandLink
    ```
 3. Install dependencies and start the server:
    ```bash
@@ -204,6 +217,157 @@ bash install.sh
 ```
 
 ---
+
+
+
+## Local Development Setup (Windows, macOS, Linux)
+
+### Prerequisites
+- Node.js 20+
+- npm
+- MongoDB (local) **or** Docker Desktop
+- Git
+
+### 1) Clone and install dependencies
+```bash
+git clone https://github.com/leonfullxr/CommandLink.git
+cd CommandLink
+cd server && npm install
+cd ../client && npm install
+```
+
+### 2) Start MongoDB
+**Option A (Docker, recommended):**
+```bash
+docker compose up -d db
+```
+
+**Option B (local Mongo service):**
+- Start your MongoDB service manually and point `MONGO_URL` to it.
+
+### 3) Configure environment files
+Create `server/.env`:
+```env
+PORT=8080
+MONGO_URL=mongodb://localhost:27017/commandlink
+JWT_SECRET=replace-with-strong-secret
+FRONTEND_URL=http://localhost:3000
+```
+
+Create `client/.env`:
+```env
+REACT_APP_BACKEND_URL=http://localhost:8080
+REACT_APP_CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
+PORT=3000
+```
+
+### 4) Run backend and frontend
+Terminal 1:
+```bash
+cd server
+npm run dev
+```
+
+Terminal 2:
+```bash
+cd client
+npm start
+```
+
+### 5) Run tests and production build checks
+```bash
+cd server && npm test
+cd ../client && npm run build
+```
+
+### Windows (PowerShell) quick commands
+```powershell
+git clone https://github.com/leonfullxr/CommandLink.git
+cd CommandLink
+cd server; npm install
+cd ..\client; npm install
+cd ..
+
+docker compose up -d db
+
+# Terminal 1
+cd server
+npm run dev
+
+# Terminal 2
+cd client
+npm start
+```
+
+### Bootstrap/Recover a super admin
+**Bash (macOS/Linux):**
+```bash
+cd server
+SUPERUSER_NAME="Command Superuser" SUPERUSER_EMAIL="superadmin@commandlink.local" SUPERUSER_PASSWORD="change-this-password" SUPERUSER_PUBLIC_KEY="<rsa-public-key>" SUPERUSER_ENCRYPTED_PRIVATE_KEY="<encrypted-private-key>" npm run create:superuser
+```
+
+**PowerShell (Windows):**
+```powershell
+cd server
+$env:SUPERUSER_NAME="Command Superuser"
+$env:SUPERUSER_EMAIL="superadmin@commandlink.local"
+$env:SUPERUSER_PASSWORD="change-this-password"
+$env:SUPERUSER_PUBLIC_KEY="<rsa-public-key>"
+$env:SUPERUSER_ENCRYPTED_PRIVATE_KEY="<encrypted-private-key>"
+npm run create:superuser
+```
+
+---
+
+## Production Rollout Checklist
+
+Use this checklist before each production release:
+
+1. **Pre-deploy validation**
+   - Run backend tests: `cd server && npm test`.
+   - Build frontend: `cd client && npm run build`.
+   - Verify no critical security/config regressions in changed areas.
+
+2. **Environment readiness**
+   - Confirm production `.env` values are present and current for client/server services.
+   - Verify database connectivity and backup/restore readiness.
+   - Verify Cloudinary and OAuth/JWT secrets are valid and rotated per policy.
+
+3. **Deployment strategy**
+   - Deploy first to staging and run smoke tests (auth, messaging, admin dashboard, order/channel workflows).
+   - Roll out to production via canary (small user slice), monitor logs/metrics, then continue to full rollout.
+
+4. **Post-deploy checks**
+   - Confirm websocket messaging flows are healthy (`send`, `recall`, dashboard updates).
+   - Confirm admin endpoints and permissions behave as expected.
+   - Validate error-rate/latency dashboards and alerting channels are green.
+
+5. **Rollback readiness**
+   - Keep previous stable image/build available.
+   - If elevated error rates occur, rollback immediately and capture incident notes for follow-up.
+
+---
+
+
+### Bootstrap a Super Admin Account
+
+To create (or promote) a dedicated `super_admin` account in an existing environment, set these variables and run:
+
+```bash
+cd server
+SUPERUSER_NAME="Command Superuser" \
+SUPERUSER_EMAIL="superadmin@commandlink.local" \
+SUPERUSER_PASSWORD="change-this-password" \
+SUPERUSER_PUBLIC_KEY="<rsa-public-key>" \
+SUPERUSER_ENCRYPTED_PRIVATE_KEY="<encrypted-private-key>" \
+npm run create:superuser
+```
+
+This script will:
+- create a new `super_admin` user when the email does not exist, or
+- promote/update the existing user with that email to `super_admin`.
+
+> Note: keep these credentials and key materials out of source control and provide them through a secure secret manager in production.
 
 ## Demo
 

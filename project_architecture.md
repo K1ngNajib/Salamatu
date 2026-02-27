@@ -157,3 +157,52 @@ Hashing passwords ensures that the actual password is **never stored**, reducing
 ## Conclusion
 
 This project provides a **secure and privacy-focused** messaging solution that ensures **end-to-end encryption** while allowing users to communicate safely without storing any metadata. Future improvements will focus on enhancing security, usability, adding the TOR relay network for IP anonymity, and password recovery support.
+## CommandLink Administrative Architecture Additions
+
+### New backend services
+- `services/orderService.js`
+- `services/circularService.js`
+- `services/signalService.js`
+- `services/directoryService.js`
+- `services/roleService.js`
+- `services/documentService.js`
+- `services/auditService.js`
+
+### New backend models
+- `models/OrderModel.js`
+- `models/CircularModel.js`
+- `models/SignalModel.js`
+- `models/DocumentModel.js`
+- `models/AuditLogModel.js`
+- `models/ChannelModel.js`
+
+### New websocket namespaces
+- `/orders`
+- `/signals`
+- `/announcements`
+- `/channels`
+
+### New frontend modules
+- `/modules/orders`
+- `/modules/circulars`
+- `/modules/signals`
+- `/modules/directory`
+- `/modules/channels`
+- `/modules/documents`
+- `/modules/roles`
+
+### Phase 3 workflow hardening
+- Added order lifecycle transition endpoints for publish/archive with strict transition validation.
+- Added channel moderation endpoints for pin/unpin message actions.
+- Added route-level required field validation for orders, circulars, signals, documents, and channels.
+
+### Phase 4 workflow integration
+- Added deep payload validation utilities for object IDs, string fields, and recipient arrays.
+- Added in-process socket event bus to push order/channel workflow updates to subscribed namespaces.
+- Upgraded dashboard workflows with safer operator controls (member picker integration and order action error handling).
+
+
+### Phase 5 stabilization
+- Extracted route request validators into shared middleware for reuse and clearer endpoint contracts.
+- Added HTTP error mapping utility to normalize service error responses into better status codes.
+- Replaced remaining legacy Cypher operational strings in upload preset and docker naming.
