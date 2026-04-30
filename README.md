@@ -281,6 +281,8 @@ cd ../client && npm run build
 ```
 
 ### Windows (PowerShell) quick commands
+> If script execution is blocked for npm helper scripts, run PowerShell as Administrator once and set `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
+
 ```powershell
 git clone https://github.com/leonfullxr/CommandLink.git
 cd CommandLink
