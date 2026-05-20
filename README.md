@@ -249,7 +249,7 @@ docker compose up -d db
 Create `server/.env`:
 ```env
 PORT=8080
-MONGO_URL=mongodb://localhost:27017/commandlink
+MONGO_URL=mongodb+srv://Commandlink:<First23@>@cluster0.krayzwv.mongodb.net/
 JWT_SECRET=replace-with-strong-secret
 FRONTEND_URL=http://localhost:3000
 ```

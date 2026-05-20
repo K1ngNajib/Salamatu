@@ -8,7 +8,7 @@ services:
       - /data/mongodb_commandlink:/data/db
 
 # MongoDB commands
-# 1. mongosh mongodb://localhost:27018
+# 1. mongosh mongodb+srv://Commandlink:<First23@>@cluster0.krayzwv.mongodb.net/
 # 2. show dbs
 # 3. use <db_name>
 # 4. show collections
