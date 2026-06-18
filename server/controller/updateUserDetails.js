@@ -1,5 +1,6 @@
 const getUserDetailsFromToken = require('../services/getUserDetailsFromToken');
 const UserModel = require('../models/UserModel');
+const { assertCanUpdateRole } = require('../utils/roleSecurity');
 
 async function updateUserDetails(request, response){
     try {
@@ -7,12 +8,31 @@ async function updateUserDetails(request, response){
 
         const user = await getUserDetailsFromToken(token);
 
-        const {name, profile_pic } = request.body;
+        const {name, profile_pic, role, commandLevel, unit, department, availabilityStatus } = request.body;
+        const currentUserDoc = await UserModel.findById(user._id).select('role');
 
-        const updateUser = await UserModel.updateOne({_id: user._id}, {
+        assertCanUpdateRole({
+            actorRole: currentUserDoc?.role || 'personnel',
+            requestedRole: role,
+            currentRole: currentUserDoc?.role,
+        });
+
+        const payload = {
             name,
-            profile_pic
-        })
+            profile_pic,
+            commandLevel,
+            unit,
+            department,
+            availabilityStatus,
+        };
+
+        if (role !== undefined && currentUserDoc?.role === 'super_admin') {
+            payload.role = role;
+        }
+
+        Object.keys(payload).forEach((key) => payload[key] === undefined && delete payload[key]);
+
+        await UserModel.updateOne({_id: user._id}, payload);
 
         const userInformation = await UserModel.findById(user._id);
 
@@ -22,7 +42,8 @@ async function updateUserDetails(request, response){
             success: true
         });
     } catch (error) {
-        return response.status(500).json({
+        const status = error.message?.startsWith('AuthorizationError:') ? 403 : 500;
+        return response.status(status).json({
             message: error.message || error,
             error: true
         });

@@ -40,7 +40,12 @@ const MessagePage = () => {
   });
   const [loading, setLoading] = useState(false);
   const [allMessage, setAllMessage] = useState([]);
+  const [showMessageActions, setShowMessageActions] = useState(false);
+  const [isOfficialMessage, setIsOfficialMessage] = useState(false);
+  const [messageExpiryMinutes, setMessageExpiryMinutes] = useState("");
+  const [actionNotice, setActionNotice] = useState("");
   const currentMessage = useRef(null);
+  const messageActionMenuRef = useRef(null);
 
   // -------------------------------------------
   // 1) FETCH THE RECIPIENT'S PUBLIC KEY
@@ -100,23 +105,19 @@ const MessagePage = () => {
   useEffect(() => {
     if (!socketConnection) return;
 
-    // Join the chat room for this userId
     socketConnection.emit("message-page", recipientParams.userId);
-    // Mark as seen
     socketConnection.emit("seen", recipientParams.userId);
 
-    // We receive basic user info (minus publicKey)
-    socketConnection.on("message-user", (data) => {
+    const handleMessageUser = (data) => {
       setRecipientInfo((prev) => ({
         ...prev,
         name: data.name,
         profile_pic: data.profile_pic,
         online: data.online
       }));
-    });
+    };
 
-    // Listen for new messages and decrypt them
-    socketConnection.on("message", (data) => {
+    const handleMessage = (data) => {
       const localPrivateKey = localStorage.getItem("privateKey") || "";
 
       const decryptor = new JSEncrypt();
@@ -125,11 +126,9 @@ const MessagePage = () => {
       const decryptedMessages = data.map((msg) => {
         let decryptedText = "";
 
-        // If I am the sender, decrypt msg.textForSender
         if (msg.msgByUserId === loggedInUser?._id) {
           decryptedText = decryptor.decrypt(msg.textForSender) || msg.textForSender;
         } else {
-          // If the message is from another user, decrypt msg.textForRecipient
           decryptedText = decryptor.decrypt(msg.textForRecipient) || msg.textForRecipient;
         }
 
@@ -140,7 +139,31 @@ const MessagePage = () => {
       });
 
       setAllMessage(decryptedMessages);
-    });
+    };
+
+    const handleMessageRecalled = ({ messageId }) => {
+      setAllMessage((prev) => prev.filter((msg) => msg._id !== messageId));
+      setActionNotice("A message was recalled.");
+    };
+
+    const handleMessageActionError = ({ message, code, action, error }) => {
+      const formattedAction = action ? `${action}: ` : "";
+      const fallbackMessage = message || error || "Message action failed.";
+      const codeSuffix = code ? ` (${code})` : "";
+      setActionNotice(`${formattedAction}${fallbackMessage}${codeSuffix}`);
+    };
+
+    socketConnection.on("message-user", handleMessageUser);
+    socketConnection.on("message", handleMessage);
+    socketConnection.on("message-recalled", handleMessageRecalled);
+    socketConnection.on("message-action-error", handleMessageActionError);
+
+    return () => {
+      socketConnection.off("message-user", handleMessageUser);
+      socketConnection.off("message", handleMessage);
+      socketConnection.off("message-recalled", handleMessageRecalled);
+      socketConnection.off("message-action-error", handleMessageActionError);
+    };
   }, [socketConnection, recipientParams?.userId, loggedInUser]);
 
   // Scroll to bottom on new messages
@@ -149,6 +172,24 @@ const MessagePage = () => {
       currentMessage.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, [allMessage]);
+
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (messageActionMenuRef.current && !messageActionMenuRef.current.contains(event.target)) {
+        setShowMessageActions(false);
+      }
+    };
+
+    if (showMessageActions) {
+      window.addEventListener("click", handleClickOutside);
+    }
+
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, [showMessageActions]);
 
   // Handle input changes
   const handleOnChange = (e) => {
@@ -192,7 +233,11 @@ const MessagePage = () => {
         }
       }
 
-      // Emit to the server with both fields
+      const expiryValue = Number(messageExpiryMinutes);
+      const expiresAt = Number.isFinite(expiryValue) && expiryValue > 0
+        ? new Date(Date.now() + expiryValue * 60 * 1000).toISOString()
+        : null;
+
       socketConnection.emit("new message", {
         sender: loggedInUser?._id,
         receiver: recipientParams.userId,
@@ -200,10 +245,11 @@ const MessagePage = () => {
         textForSender: encryptedForSender,
         imageUrl: message.imageUrl,
         videoUrl: message.videoUrl,
-        msgByUserId: loggedInUser?._id
+        msgByUserId: loggedInUser?._id,
+        isOfficial: isOfficialMessage,
+        expiresAt,
       });
 
-      // Clear local state
       setMessage({ text: "", imageUrl: "", videoUrl: "" });
     }
   };
@@ -252,6 +298,27 @@ const MessagePage = () => {
       videoUrl: ""
     }));
   };
+
+
+
+  const handleRecallLatestOwnMessage = () => {
+    const latestOwnMessage = [...allMessage].reverse().find((msg) => msg?.msgByUserId === loggedInUser?._id);
+
+    if (!latestOwnMessage || !socketConnection) {
+      setActionNotice("No outgoing message available to recall.");
+      return;
+    }
+
+    socketConnection.emit("recall-message", {
+      messageId: latestOwnMessage._id,
+      sender: loggedInUser?._id,
+      receiver: recipientParams.userId,
+    });
+
+    setShowMessageActions(false);
+    setActionNotice("Recall request sent.");
+  };
+
 
   // -------------------------------------------
   // AVATAR MODAL
@@ -328,13 +395,54 @@ const MessagePage = () => {
           </div>
         </div>
 
-        <div>
-          <button className="cursor-pointer hover:text-primary">
-            <HiDotsVertical /> 
-            {/* TODO: Add more options here */}
+        <div className="relative" ref={messageActionMenuRef}>
+          <button
+            className="cursor-pointer hover:text-primary"
+            onClick={() => setShowMessageActions((prev) => !prev)}
+            title="Message actions"
+          >
+            <HiDotsVertical />
           </button>
+
+          {showMessageActions && (
+            <div className="absolute right-0 top-8 bg-white border rounded shadow-md p-3 w-64 z-20">
+              <label className="flex items-center justify-between text-sm mb-2">
+                <span>Mark outgoing messages as official</span>
+                <input
+                  type="checkbox"
+                  checked={isOfficialMessage}
+                  onChange={(e) => setIsOfficialMessage(e.target.checked)}
+                />
+              </label>
+
+              <label className="block text-sm mb-3">
+                Expiry (minutes, optional)
+                <input
+                  type="number"
+                  min="1"
+                  value={messageExpiryMinutes}
+                  onChange={(e) => setMessageExpiryMinutes(e.target.value)}
+                  className="border rounded w-full px-2 py-1 mt-1"
+                  placeholder="e.g. 30"
+                />
+              </label>
+
+              <button
+                className="w-full border rounded px-2 py-1 text-sm hover:bg-slate-100"
+                onClick={handleRecallLatestOwnMessage}
+              >
+                Recall latest outgoing message
+              </button>
+            </div>
+          )}
         </div>
       </header>
+
+      {actionNotice && (
+        <div className="px-4 py-2 text-xs text-amber-700 bg-amber-50 border-b border-amber-100">
+          {actionNotice}
+        </div>
+      )}
 
       {/* Messages list */}
       <section className="h-[calc(100vh-128px)] overflow-x-hidden overflow-y-scroll scrollbar relative bg-slate-200 bg-opacity-50">

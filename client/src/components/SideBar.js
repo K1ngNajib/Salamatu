@@ -98,9 +98,12 @@ const SideBar = () => {
                         />
                         </NavLink>
 
-                        <div title='add friend' onClick={setOpenSearchUser} className='w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded' >
+                        <div title='add user' onClick={() => setOpenSearchUser(true)} className='w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded' >
                             <FaUserPlus size={25}/>
                         </div>
+                        <NavLink to='/command-dashboard' className={({isActive})=>`w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded text-xs text-center px-1 ${isActive && "bg-slate-200"}`} title='Command dashboard'>
+                            HQ
+                        </NavLink>
                     </div>
                     <div className="flex flex-col items-center">
                         <button className="mx-auto" title={user?.name} onClick={()=>setEditUserOpen(true)}>
@@ -122,7 +125,7 @@ const SideBar = () => {
 
             <div className="w-full">
                 <div className="flex items-center h-16">
-                    <h2 className="text-xl font-bold p-2 text-slate-800 h-16">Message</h2>
+                    <h2 className="text-xl font-bold p-2 text-slate-800 h-16">CommandLink</h2>
                 </div>
                 <div className="bg-slate-200 p-[0.5px]"> </div>
                 

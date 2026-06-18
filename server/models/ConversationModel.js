@@ -1,58 +1,6 @@
-const mongoose = require('mongoose');
+const createLocalModel = require('./localModel');
 
-const messageSchema = new mongoose.Schema({
-    textForRecipient: {
-        type: String,
-    },
-    textForSender: {
-        type: String,
-    },
-    imageUrl : {
-        type: String,
-        default: ''
-    },
-    videoUrl : {
-        type : String,
-        default : ""
-    },
-    seen : {
-        type: Boolean,
-        default: false
-    },
-    msgByUserId : {
-        type: mongoose.Schema.ObjectId,
-        required: true,
-        ref : 'User'
-    }
-}, {
-    timestamps: true
-});
+const ConversationModel = createLocalModel('conversation');
+const MessageModel = createLocalModel('message');
 
-const conversationSchema = new mongoose.Schema({
-    sender : {
-        type: mongoose.Schema.ObjectId,
-        required: true,
-        ref : 'User'
-    },
-    receiver : {
-        type: mongoose.Schema.ObjectId,
-        required: true,
-        ref : 'User'
-    },
-    message : [
-        {
-            type: mongoose.Schema.ObjectId,
-            ref : 'Message'
-        }
-    ]
-}, {
-    timestamps: true
-});
-
-const MessageModel = mongoose.model('Message', messageSchema);
-const ConversationModel = mongoose.model('Conversation', conversationSchema);
-
-module.exports = { 
-    MessageModel, 
-    ConversationModel 
-};
+module.exports = { ConversationModel, MessageModel };

@@ -14,7 +14,7 @@ async function setup2FA (req, res) {
         const url = speakeasy.otpauthURL({
             secret: secret.base32,
             label:  `${req.user.name}`,
-            issuer: "www.cypher.com",
+            issuer: "www.commandlink.app",
             encoding: "base32",
         });
 

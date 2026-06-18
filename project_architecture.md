@@ -55,20 +55,20 @@
 ### **Sending a Message**
 
 1. The sender requests the recipient’s **public key** from the server.
-2. The server sends a request to MongoDB to retrieve the recipient's public key.
-3. MongoDB sends the recipient's public key.
+2. The server sends a request to SQLite to retrieve the recipient's public key.
+3. SQLite sends the recipient's public key.
 4. The server returns the recipient's public key to the sender.
 5. The sender **encrypts the message** using the recipient’s **public key**.
 6. The encrypted message is sent to the server **via a Socket connection**.
-7. The server sends the encrypted message to the MongoDB database.
-8. MongoDB **stores the encrypted message** in the database.
+7. The server sends the encrypted message to the local SQLite database.
+8. SQLite **stores the encrypted message** in the database.
 ![Sending a Message](./details/images/sending_message_workflow.png)
 
 ### **Receiving a Message**
 
 1. The recipient requests the **encrypted message** from the server.
-2. The server requests the encrypted message from the MongoDB database.
-3. MongoDB sends the encrypted message to the server.
+2. The server requests the encrypted message from the local SQLite database.
+3. SQLite sends the encrypted message to the server.
 4. The server sends the encrypted message to the recipient.
 5. The recipient **retrieves the encrypted message** from the server.
 6. The recipient **decrypts the message locally** using their private key.
@@ -79,7 +79,7 @@
 1. The user logs in with their **master password**.
 2. The client forwards the payload to the server for verification.
 3. The server verifies the user’s identity and login.
-4. The server requests the **encrypted private key** from the MongoDB database.
+4. The server requests the **encrypted private key** from the local SQLite database.
 5. The server sends the encrypted private key to the user.
 6. The derived key decrypts the user’s **encrypted private key**, restoring access to the private key.
 7. The user’s **private key is decrypted** and stored locally for message decryption.
@@ -157,3 +157,52 @@ Hashing passwords ensures that the actual password is **never stored**, reducing
 ## Conclusion
 
 This project provides a **secure and privacy-focused** messaging solution that ensures **end-to-end encryption** while allowing users to communicate safely without storing any metadata. Future improvements will focus on enhancing security, usability, adding the TOR relay network for IP anonymity, and password recovery support.
+## CommandLink Administrative Architecture Additions
+
+### New backend services
+- `services/orderService.js`
+- `services/circularService.js`
+- `services/signalService.js`
+- `services/directoryService.js`
+- `services/roleService.js`
+- `services/documentService.js`
+- `services/auditService.js`
+
+### New backend models
+- `models/OrderModel.js`
+- `models/CircularModel.js`
+- `models/SignalModel.js`
+- `models/DocumentModel.js`
+- `models/AuditLogModel.js`
+- `models/ChannelModel.js`
+
+### New websocket namespaces
+- `/orders`
+- `/signals`
+- `/announcements`
+- `/channels`
+
+### New frontend modules
+- `/modules/orders`
+- `/modules/circulars`
+- `/modules/signals`
+- `/modules/directory`
+- `/modules/channels`
+- `/modules/documents`
+- `/modules/roles`
+
+### Phase 3 workflow hardening
+- Added order lifecycle transition endpoints for publish/archive with strict transition validation.
+- Added channel moderation endpoints for pin/unpin message actions.
+- Added route-level required field validation for orders, circulars, signals, documents, and channels.
+
+### Phase 4 workflow integration
+- Added deep payload validation utilities for object IDs, string fields, and recipient arrays.
+- Added in-process socket event bus to push order/channel workflow updates to subscribed namespaces.
+- Upgraded dashboard workflows with safer operator controls (member picker integration and order action error handling).
+
+
+### Phase 5 stabilization
+- Extracted route request validators into shared middleware for reuse and clearer endpoint contracts.
+- Added HTTP error mapping utility to normalize service error responses into better status codes.
+- Replaced remaining legacy Cypher operational strings in upload preset and docker naming.

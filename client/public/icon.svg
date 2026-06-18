@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="CommandLink logo">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#5ad9ff" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#5ad9ff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#24b5f6"/>
+      <stop offset="100%" stop-color="#2a79dc"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1024" height="1024" fill="#e9eaec"/>
+  <circle cx="512" cy="512" r="360" fill="url(#glow)"/>
+  <circle cx="512" cy="512" r="300" fill="none" stroke="url(#blue)" stroke-width="20"/>
+  <circle cx="512" cy="512" r="264" fill="none" stroke="#35b8f5" stroke-width="8"/>
+
+  <circle cx="512" cy="400" r="104" fill="none" stroke="url(#blue)" stroke-width="16"/>
+  <path d="M430 375c50-22 135-14 145 36-33-10-52 2-70 22 5-38-35-59-75-58z" fill="url(#blue)"/>
+  <path d="M458 451c33-41 90-33 104-5-34-8-56 7-67 39-2-17-11-28-37-34z" fill="url(#blue)"/>
+  <path d="M412 458c-6-39 21-72 56-82-18 25-25 52-18 84-11-9-24-11-38-2z" fill="url(#blue)"/>
+
+  <text x="512" y="640" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="700" fill="url(#blue)">COMMAND</text>
+  <text x="512" y="728" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="700" fill="url(#blue)">LINK</text>
+</svg>

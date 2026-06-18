@@ -1,12 +1,14 @@
 import React from "react";
+import commandLinkLogo from "../assets/commandlink-logo.svg";
 
 const ForgotPassword = () => {
     return (
-        <div>
-            <img 
-                src="https://res.cloudinary.com/du0ukbkvu/image/upload/v1744233737/Cypher-file/ame4kl0fs0b4esfhxkzh.png" 
-                alt="Forgot Password Meme" 
-                style={{ maxWidth: "50%", height: "auto", marginTop: "1rem" }} 
+        <div className="flex justify-center mt-4">
+            {/* CommandLink branded placeholder while forgot-password workflow is being expanded. */}
+            <img
+                src={commandLinkLogo}
+                alt="CommandLink Logo"
+                style={{ maxWidth: "40%", height: "auto" }}
             />
         </div>
     );
