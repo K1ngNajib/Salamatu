@@ -9,7 +9,6 @@ async function updateUserDetails(request, response){
         const user = await getUserDetailsFromToken(token);
 
         const {name, profile_pic, role, commandLevel, unit, department, availabilityStatus } = request.body;
-        const currentUserDoc = await UserModel.findById(user._id).select('role');
 
         assertCanUpdateRole({
             actorRole: currentUserDoc?.role || 'personnel',
@@ -20,19 +19,12 @@ async function updateUserDetails(request, response){
         const payload = {
             name,
             profile_pic,
+            role,
             commandLevel,
             unit,
             department,
-            availabilityStatus,
-        };
-
-        if (role !== undefined && currentUserDoc?.role === 'super_admin') {
-            payload.role = role;
-        }
-
-        Object.keys(payload).forEach((key) => payload[key] === undefined && delete payload[key]);
-
-        await UserModel.updateOne({_id: user._id}, payload);
+            availabilityStatus
+        })
 
         const userInformation = await UserModel.findById(user._id);
 

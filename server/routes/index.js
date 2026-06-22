@@ -41,12 +41,6 @@ const {
 
 const router = express.Router();
 
-// Route groups (high-level navigation):
-// 1) Auth/profile: register/login/user/2FA
-// 2) Orders/Circulars/Signals/Documents APIs
-// 3) Channels + member moderation APIs
-// 4) Directory and role-aware administrative read models
-
 const sendServiceError = (res, error) => {
   const status = getHttpStatusFromError(error?.message || '');
   return res.status(status).json({ error: true, message: error.message });
@@ -57,7 +51,7 @@ router.post('/email', checkEmail);
 router.post('/password', checkPassword);
 router.get('/user-details', userDetails);
 router.get('/logout', logout);
-router.post('/update-user', authenticateJWT, updateUserDetails);
+router.post('/update-user', updateUserDetails);
 router.post('/search-user', searchUser);
 router.get('/get-public-key', getPublicKey);
 router.post('/2fa/setup', authenticateJWT, setup2FA);

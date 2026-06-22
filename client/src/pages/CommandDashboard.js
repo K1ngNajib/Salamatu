@@ -9,8 +9,6 @@ import ChannelsModule from '../modules/channels';
 import DocumentsModule from '../modules/documents';
 import RolesModule from '../modules/roles';
 
-// Dashboard module orchestration:
-// fetchAll() is the central refresh trigger passed to modules after mutations.
 const CommandDashboard = () => {
   const [orders, setOrders] = useState([]);
   const [circulars, setCirculars] = useState([]);

@@ -1,4 +1,4 @@
-const { isValidObjectId } = require('./validation');
+const { isValidObjectId } = require('mongoose');
 const { hasPermission } = require('../services/roleService');
 
 const MAX_MESSAGE_EXPIRY_MINUTES = 60 * 24 * 7; // 7 days

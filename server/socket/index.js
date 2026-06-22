@@ -26,11 +26,6 @@ const io = new Server(server, {
 
 const onlineUser = new Set();
 
-// Socket architecture overview:
-// - default namespace: direct messages + conversations
-// - /orders, /signals, /announcements, /channels: admin workflow streams
-// - socketEventBus bridges service-layer updates to subscribed clients
-
 io.on('connection', async (socket) => {
   // Connection log intentionally omitted to reduce metadata exposure in logs.
 
