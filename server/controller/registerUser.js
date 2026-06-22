@@ -1,5 +1,6 @@
 const UserModel = require('../models/UserModel');
 const bcryptjs = require('bcryptjs');
+const { assertSafeRegistrationRole } = require('../utils/roleSecurity');
 
 async function registerUser(request, response){
     try {
@@ -39,7 +40,8 @@ async function registerUser(request, response){
             success: true
         });
     } catch (error) {
-        return response.status(500).json({
+        const status = error.message?.startsWith('AuthorizationError:') ? 403 : 500;
+        return response.status(status).json({
             message: error.message || error,
             error: true
         });

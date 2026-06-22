@@ -264,7 +264,7 @@ else
   {
     echo "PORT=$SERVER_PORT"
     echo "FRONTEND_URL=http://localhost:$CLIENT_PORT"
-    echo "MONGO_URL=<ask_admin>"
+    echo "COMMANDLINK_DB_PATH=<optional_local_db_path>"
     echo "JWT_SECRET=abcdedfghijklmnopqrstuvwxyz"
   } > "$ENV_FILE"
   echo -e "${GREEN}✅ Created and updated new server .env${NC}"

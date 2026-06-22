@@ -11,6 +11,9 @@ import Check2FAPage from "../pages/Check2FAPage";
 import CommandDashboard from "../pages/CommandDashboard";
 import ProtectedRoute from "../components/ProtectedRoute";
 
+// Route map overview:
+// - public auth surfaces: /register, /email, /password, /forgot-password
+// - protected surfaces: / (messaging shell), /command-dashboard
 const router = createBrowserRouter([
     {
         path: "/",

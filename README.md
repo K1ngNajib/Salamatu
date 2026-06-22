@@ -16,7 +16,7 @@
    - [Server Side](#server-side-1)
    - [Database](#database)
 6. [Frameworks & APIs](#frameworks--apis)
-   - [Database: MongoDB](#database-mongodb)
+   - [Database: SQLite](#database-sqlite)
    - [Media Storage: Cloudinary](#media-storage-cloudinary)
    - [Real-Time Communication: Socket.io](#real-time-communication-socketio)
 7. [Project Folder Structure](#project-folder-structure)
@@ -71,8 +71,7 @@ CommandLink now includes:
 
 - Node.js: Backend runtime for handling requests.
 - Express.js: Lightweight framework for handling API routes and middleware.
-- MongoDB: NoSQL database for storing user data and messages.
-- Mongoose: ODM (Object Data Modeling) for interacting with MongoDB.
+- SQLite: local-first database for storing CommandLink entities, commands, and relationships.
 - Socket.io: WebSockets for real-time messaging.
 - Bcrypt.js: Password hashing for secure authentication.
 - Jsonwebtoken (JWT): Token-based authentication for user sessions.
@@ -87,7 +86,7 @@ Upon user registration, the following occurs:
 1. The client **generates a 2048-bit RSA key pair** (public and private key).
 2. The client **encrypts the private key** with the user's master password.
 3. The client **sends the registration data** (username, public key, and encrypted private key) to the server.
-4. The server **stores the information in MongoDB**.
+4. The server **stores the information in local SQLite storage**.
 5. The server **acknowledges the successful registration** and redirects the client to the login page.
 
 ---
@@ -103,7 +102,7 @@ Upon user registration, the following occurs:
    - **Authentication Module**:
      - Handles user login with the master password.
      - Validates identity and grants access to stored data.
-   - **Database Connection**: Stores users' data securely in MongoDB.
+   - **Database Connection**: Stores users' data securely in local SQLite storage.
    - **Message Queue**: Stores encrypted messages so that they are retrieved by the recipient.
    - **Key Exchange Service**: Sends user's public key for ensuring message encryption.
 
@@ -118,10 +117,10 @@ For more details, refer to the [project architecture documentation](project_arch
 
 ## Frameworks & APIs
 
-### **Database: MongoDB**
+### **Database: SQLite**
 
-- We use **MongoDB Atlas** as our cloud-hosted database.
-- The backend interacts with MongoDB through the **Mongoose** library for structured data modeling.
+- CommandLink uses a local SQLite database at `data/commandlink.db`.
+- The storage layer initializes from `storage/schema.sql` and requires no external database service.
 
 ### **Media Storage: Cloudinary**
 

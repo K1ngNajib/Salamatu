@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const createLocalModel = require('./localModel');
 
 const userSchema = new mongoose.Schema({
     name: {

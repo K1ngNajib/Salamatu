@@ -55,20 +55,20 @@
 ### **Sending a Message**
 
 1. The sender requests the recipient’s **public key** from the server.
-2. The server sends a request to MongoDB to retrieve the recipient's public key.
-3. MongoDB sends the recipient's public key.
+2. The server sends a request to SQLite to retrieve the recipient's public key.
+3. SQLite sends the recipient's public key.
 4. The server returns the recipient's public key to the sender.
 5. The sender **encrypts the message** using the recipient’s **public key**.
 6. The encrypted message is sent to the server **via a Socket connection**.
-7. The server sends the encrypted message to the MongoDB database.
-8. MongoDB **stores the encrypted message** in the database.
+7. The server sends the encrypted message to the local SQLite database.
+8. SQLite **stores the encrypted message** in the database.
 ![Sending a Message](./details/images/sending_message_workflow.png)
 
 ### **Receiving a Message**
 
 1. The recipient requests the **encrypted message** from the server.
-2. The server requests the encrypted message from the MongoDB database.
-3. MongoDB sends the encrypted message to the server.
+2. The server requests the encrypted message from the local SQLite database.
+3. SQLite sends the encrypted message to the server.
 4. The server sends the encrypted message to the recipient.
 5. The recipient **retrieves the encrypted message** from the server.
 6. The recipient **decrypts the message locally** using their private key.
@@ -79,7 +79,7 @@
 1. The user logs in with their **master password**.
 2. The client forwards the payload to the server for verification.
 3. The server verifies the user’s identity and login.
-4. The server requests the **encrypted private key** from the MongoDB database.
+4. The server requests the **encrypted private key** from the local SQLite database.
 5. The server sends the encrypted private key to the user.
 6. The derived key decrypts the user’s **encrypted private key**, restoring access to the private key.
 7. The user’s **private key is decrypted** and stored locally for message decryption.
